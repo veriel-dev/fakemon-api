@@ -24,10 +24,24 @@ class Server {
     this.app.use(express.urlencoded({ extended: true }));
   }
   private static(): void {
-    console.log({ rootDir: this.rootDir });
+    // configureImageHandling("/api/v1/fakemons/assets", this.app);
+
     this.app.use(
       "/api/v1/fakemons/assets",
-      express.static(path.join(this.rootDir, "public"))
+      express.static(path.join(this.rootDir, "public"), {
+        maxAge: "7d",
+        immutable: true,
+        index: false,
+        etag: true,
+        lastModified: true,
+        extensions: ["webp"],
+        setHeaders: (res, path) => {
+          if (path.endsWith(".webp")) {
+            res.set("Content-Type", "image/webp");
+          }
+          res.set("Cache-Control", "public, max-age=604800, immutable");
+        },
+      })
     );
   }
   private routes(): void {

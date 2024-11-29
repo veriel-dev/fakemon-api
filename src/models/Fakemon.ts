@@ -56,6 +56,32 @@ const statsSchema = new Schema(
   }
 );
 
+const abilitySchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    toJSON: {
+      transform: (_, ret) => {
+        delete ret._id;
+        return ret;
+      },
+    },
+    toObject: {
+      transform: (_, ret) => {
+        delete ret._id;
+        return ret;
+      },
+    },
+  }
+);
 const fakemonSchema = new Schema(
   {
     name: {
@@ -86,12 +112,16 @@ const fakemonSchema = new Schema(
       type: String,
       required: true,
     },
-    abilities: [
-      {
-        type: String,
+    abilities: {
+      normal: {
+        type: abilitySchema,
         required: true,
       },
-    ],
+      hidden: {
+        type: abilitySchema,
+        required: true,
+      },
+    },
     imageUrl: {
       type: String,
     },

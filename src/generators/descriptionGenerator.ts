@@ -1,226 +1,242 @@
-import { Stats } from "../types/fakemon.type";
-
 interface DescriptionTemplates {
   [key: string]: {
+    prefix: string[];
     habitat: string[];
     behavior: string[];
     appearance: string[];
     specialAbility: string[];
+    filler: string[];
   };
 }
 
+const TARGET_LENGTH = 30;
+const LENGTH_TOLERANCE = 20;
+
 const typeDescriptions: DescriptionTemplates = {
   fire: {
+    prefix: [
+      "Este fascinante Pokémon de fuego",
+      "Como criatura de naturaleza ardiente",
+      "Siendo un poderoso ser de las llamas",
+    ],
     habitat: [
-      "vive cerca de volcanes activos",
-      "habita en cuevas con géiseres",
-      "se encuentra en desiertos ardientes",
+      "ha establecido su territorio cerca de volcanes activos",
+      "prefiere habitar en cuevas con géiseres burbujeantes",
+      "ha adaptado su cuerpo para sobrevivir en desiertos ardientes",
     ],
     behavior: [
-      "expulsa llamas cuando se emociona",
-      "su temperatura corporal puede derretir rocas",
-      "duerme rodeado de brasas ardientes",
+      "cuando se emociona, expulsa llamaradas de intenso calor",
+      "mantiene una temperatura corporal capaz de derretir rocas",
+      "busca lugares cálidos para dormir entre brasas ardientes",
     ],
     appearance: [
-      "su piel brilla como carbones encendidos",
-      "tiene marcas que se iluminan al calentarse",
-      "emite un suave resplandor rojizo",
+      "Su piel resplandece como carbones recién encendidos",
+      "Su cuerpo está cubierto de marcas que brillan al calentarse",
+      "Todo su ser emite un característico resplandor rojizo",
     ],
     specialAbility: [
       "puede regular la temperatura de su cuerpo a voluntad",
-      "sus llamas nunca se apagan bajo el agua",
-      "puede detectar fuentes de calor a distancia",
+      "sus llamas son tan potentes que ni el agua puede extinguirlas",
+      "puede detectar fuentes de calor a gran distancia",
+    ],
+    filler: [
+      "Los investigadores continúan estudiando sus peculiares características",
+      "Su presencia es muy apreciada por los entrenadores expertos",
+      "Se dice que su poder aumenta en días soleados",
+      "Los habitantes locales lo consideran un guardián de la región",
+      "Su comportamiento fascina a los científicos Pokémon",
     ],
   },
   water: {
+    prefix: [
+      "Esta majestuosa criatura acuática",
+      "Como ejemplar único entre los Pokémon de agua",
+      "Adaptado perfectamente al medio acuático",
+    ],
     habitat: [
-      "habita en las profundidades oceánicas",
-      "vive en lagos cristalinos",
-      "se encuentra en ríos subterráneos",
+      "ha encontrado su hogar en las profundidades oceánicas",
+      "prospera en los lagos más cristalinos de la región",
+      "habita en intrincados sistemas de ríos subterráneos",
     ],
     behavior: [
-      "crea burbujas para comunicarse",
-      "puede respirar indefinidamente bajo el agua",
-      "genera corrientes de agua al nadar",
+      "se comunica mediante elaborados patrones de burbujas",
+      "ha desarrollado la capacidad de respirar eternamente bajo el agua",
+      "genera poderosas corrientes con sus elegantes movimientos",
     ],
     appearance: [
-      "su piel tiene un brillo similar a las escamas",
-      "emite un suave resplandor azulado",
-      "su cuerpo es parcialmente transparente",
+      "Su piel reluce con un brillo similar a escamas preciosas",
+      "Su cuerpo emite un sereno resplandor azulado hipnótico",
+      "Posee una estructura parcialmente transparente para camuflarse",
     ],
     specialAbility: [
-      "puede purificar agua contaminada",
-      "crea esferas de agua flotantes",
-      "controla la presión del agua a su alrededor",
+      "posee la habilidad de purificar aguas contaminadas",
+      "puede crear y manipular esferas de agua flotantes",
+      "controla con precisión la presión del agua a su alrededor",
+    ],
+    filler: [
+      "Los marineros lo consideran un presagio de buena suerte",
+      "Su presencia indica la pureza de las aguas donde habita",
+      "Es admirado por su gracia al nadar",
+      "Los científicos estudian sus métodos de navegación",
+      "Su comportamiento influye en las corrientes marinas locales",
     ],
   },
   grass: {
+    prefix: [
+      "Este armonioso Pokémon de planta",
+      "Como ser vinculado a la naturaleza",
+      "Siendo una criatura del bosque",
+    ],
     habitat: [
-      "vive en bosques frondosos",
-      "habita en jardines antiguos",
-      "se encuentra en selvas tropicales",
+      "ha creado su hogar en los bosques más antiguos",
+      "prospera en jardines centenarios llenos de vida",
+      "ha encontrado refugio en las selvas más densas",
     ],
     behavior: [
-      "florece durante la luna llena",
-      "esparce esporas luminosas al caminar",
-      "realiza fotosíntesis mientras duerme",
+      "realiza fotosíntesis mientras descansa plácidamente",
+      "esparce esporas luminiscentes durante sus paseos nocturnos",
+      "desarrolla un vínculo simbiótico con las plantas a su alrededor",
     ],
     appearance: [
-      "tiene hojas que cambian con las estaciones",
-      "su cuerpo está cubierto de musgo suave",
-      "emite un dulce aroma floral",
+      "Su cuerpo está adornado con hojas que cambian según la estación",
+      "Su piel está cubierta por un suave musgo que brilla con el rocío",
+      "Sus patrones naturales imitan perfectamente el follaje del bosque",
     ],
     specialAbility: [
-      "puede hacer crecer plantas instantáneamente",
-      "se camufla perfectamente entre la vegetación",
-      "regenera su energía bajo la luz solar",
+      "puede acelerar el crecimiento de las plantas a su alrededor",
+      "se mimetiza completamente con la vegetación cuando lo necesita",
+      "absorbe energía solar para potenciar sus habilidades naturales",
+    ],
+    filler: [
+      "Los botánicos estudian sus propiedades curativas con gran interés",
+      "Su presencia revitaliza los ecosistemas deteriorados",
+      "Las plantas florecen con más vigor en su territorio",
+      "Los jardineros buscan su bendición para sus cultivos",
+      "Su conexión con la naturaleza inspira a los conservacionistas",
     ],
   },
   electric: {
+    prefix: [
+      "Este energético Pokémon eléctrico",
+      "Como maestro de la electricidad",
+      "Siendo una fuente de poder electromagnético",
+    ],
     habitat: [
-      "habita en zonas de tormentas eléctricas",
-      "vive cerca de plantas de energía",
-      "se encuentra en nubes cargadas de electricidad",
+      "frecuenta áreas donde abundan las tormentas eléctricas",
+      "ha establecido su territorio cerca de campos electromagnéticos naturales",
+      "prefiere las alturas donde los rayos son más frecuentes",
     ],
     behavior: [
-      "genera campos electromagnéticos al dormir",
-      "atrae pequeños objetos metálicos",
-      "brilla intensamente durante las tormentas",
+      "genera campos electromagnéticos mientras duerme profundamente",
+      "atrae pequeños objetos metálicos con su campo energético",
+      "resplandece con mayor intensidad durante las tormentas",
     ],
     appearance: [
-      "su pelaje se eriza con la electricidad estática",
-      "tiene patrones que destellan como relámpagos",
-      "emite chispas al moverse rápidamente",
+      "Su pelaje se eriza constantemente debido a la electricidad estática",
+      "Su cuerpo está marcado con patrones que brillan como relámpagos",
+      "Emite destellos y chispas con cada movimiento rápido",
     ],
     specialAbility: [
-      "puede recargar dispositivos electrónicos",
-      "genera campos de fuerza eléctricos",
-      "se comunica a través de impulsos electromagnéticos",
+      "puede recargar dispositivos electrónicos con solo tocarlos",
+      "genera campos de fuerza eléctricos para su protección",
+      "se comunica a través de pulsos electromagnéticos precisos",
+    ],
+    filler: [
+      "Los ingenieros estudian su capacidad de generar energía limpia",
+      "Su presencia puede interferir con equipos electrónicos cercanos",
+      "Las tormentas se intensifican cuando está presente",
+      "Los científicos analizan su sistema de almacenamiento de energía",
+      "Su poder podría revolucionar la tecnología energética",
     ],
   },
   rock: {
+    prefix: [
+      "Este resistente Pokémon de roca",
+      "Como guardián de las montañas",
+      "Siendo una antigua criatura mineral",
+    ],
     habitat: [
-      "vive en antiguas cordilleras montañosas",
-      "habita en cavernas de cristal",
-      "se encuentra en formaciones rocosas milenarias",
+      "reside en las cordilleras más antiguas del mundo",
+      "ha convertido antiguas cavernas de cristal en su hogar",
+      "habita en formaciones rocosas que datan de eras prehistóricas",
     ],
     behavior: [
-      "hiberna durante largos períodos de tiempo",
-      "consume minerales para fortalecerse",
-      "se mimetiza con las formaciones rocosas",
+      "entra en largos períodos de hibernación para fortalecerse",
+      "consume minerales específicos para mantener su dureza",
+      "se camufla perfectamente entre las formaciones rocosas",
     ],
     appearance: [
-      "su piel tiene la textura de granito pulido",
-      "está cubierto de cristales preciosos",
-      "cambia de color según los minerales que consume",
+      "Su cuerpo está formado por una rara variedad de minerales pulidos",
+      "Su superficie está decorada con cristales de diversos colores",
+      "Su piel tiene patrones que reflejan los minerales que consume",
     ],
     specialAbility: [
-      "puede endurecer su cuerpo hasta ser indestructible",
-      "detecta depósitos de minerales valiosos",
-      "crea túneles a través de la roca sólida",
+      "puede cristalizar su cuerpo hasta volverse prácticamente indestructible",
+      "detecta vetas de minerales valiosos en las profundidades",
+      "crea túneles perfectos a través de la roca más dura",
+    ],
+    filler: [
+      "Los geólogos estudian su composición única con fascinación",
+      "Su presencia indica la existencia de minerales raros",
+      "Las montañas guardan secretos de su antiguo origen",
+      "Los mineros respetan su rol como guardián de la tierra",
+      "Su conocimiento de las rocas supera cualquier tecnología actual",
     ],
   },
-};
-
-const statDescriptors = {
-  highHp: [
-    "es conocido por su extraordinaria resistencia",
-    "puede soportar golpes que derribarían a otros Fakemon",
-    "posee una vitalidad incomparable",
-  ],
-  highAttack: [
-    "sus golpes son devastadores",
-    "posee una fuerza física excepcional",
-    "puede derribar árboles de un solo golpe",
-  ],
-  highDefense: [
-    "su cuerpo es prácticamente impenetrable",
-    "pocos ataques logran dañarlo",
-    "su defensa natural es extraordinaria",
-  ],
-  highSpAtk: [
-    "sus ataques especiales son temibles",
-    "canaliza energía con gran poder",
-    "sus poderes elementales son devastadores",
-  ],
-  highSpDef: [
-    "resiste ataques energéticos con facilidad",
-    "tiene una resistencia mística excepcional",
-    "los ataques especiales apenas lo afectan",
-  ],
-  highSpeed: [
-    "se mueve más rápido que el ojo puede seguir",
-    "su velocidad es legendaria",
-    "pocos pueden igualar su agilidad",
-  ],
 };
 
 function getRandomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function getStatStrengths(stats: Stats): string[] {
-  const strengths: string[] = [];
-
-  if (stats.hp > 80) strengths.push(getRandomElement(statDescriptors.highHp));
-  if (stats.attack > 90)
-    strengths.push(getRandomElement(statDescriptors.highAttack));
-  if (stats.defense > 85)
-    strengths.push(getRandomElement(statDescriptors.highDefense));
-  if (stats.spAtk > 90)
-    strengths.push(getRandomElement(statDescriptors.highSpAtk));
-  if (stats.spDef > 85)
-    strengths.push(getRandomElement(statDescriptors.highSpDef));
-  if (stats.speed > 90)
-    strengths.push(getRandomElement(statDescriptors.highSpeed));
-
-  return strengths;
-}
-
-export function generateDescription(
-  type: string,
-  stats: Stats,
-  name: string
+function adjustLength(
+  text: string,
+  targetLength: number,
+  fillerSentences: string[]
 ): string {
-  const templates = typeDescriptions[type.toLowerCase()];
-  if (!templates) return "Un misterioso Fakemon.";
+  let currentLength = text.length;
+  let adjustedText = text;
 
-  const habitat = getRandomElement(templates.habitat);
-  const behavior = getRandomElement(templates.behavior);
-  const appearance = getRandomElement(templates.appearance);
-  const specialAbility = getRandomElement(templates.specialAbility);
-  const statStrengths = getStatStrengths(stats);
-
-  const description = [`${name} ${habitat}.`, appearance, behavior];
-
-  if (statStrengths.length > 0) {
-    description.push(getRandomElement(statStrengths));
+  while (
+    currentLength < targetLength - LENGTH_TOLERANCE &&
+    fillerSentences.length > 0
+  ) {
+    const filler = fillerSentences.pop();
+    if (filler && !adjustedText.includes(filler)) {
+      adjustedText += ` ${filler}.`;
+      currentLength = adjustedText.length;
+    }
   }
 
-  description.push(specialAbility);
+  if (currentLength > targetLength + LENGTH_TOLERANCE) {
+    const sentences = adjustedText.split(". ").filter((s) => s.length > 0);
+    while (
+      sentences.length > 3 &&
+      adjustedText.length > targetLength + LENGTH_TOLERANCE
+    ) {
+      sentences.pop();
+      adjustedText = sentences.join(". ") + ".";
+      currentLength = adjustedText.length;
+    }
+  }
 
-  return description.join(" ");
+  return adjustedText;
 }
 
-// Función para generar descripciones más complejas para Fakemon de tipos duales
-export function generateDualTypeDescription(
-  types: string[],
-  stats: Stats,
-  name: string
-): string {
-  if (types.length !== 2) return generateDescription(types[0], stats, name);
+export function generateDescription(type: string, name: string): string {
+  const templates = typeDescriptions[type.toLowerCase()];
+  if (!templates) {
+    return `${name} es un misterioso Pokémon que requiere más investigación.`;
+  }
 
-  const type1 = typeDescriptions[types[0].toLowerCase()];
-  const type2 = typeDescriptions[types[1].toLowerCase()];
+  const mainDescription = [
+    `${getRandomElement(templates.prefix)} ${getRandomElement(
+      templates.habitat
+    )}. `,
+    `${getRandomElement(templates.appearance)}. `,
+    `De manera fascinante, ${getRandomElement(templates.behavior)}. `,
+    `${getRandomElement(templates.specialAbility)}. `,
+  ].join("");
 
-  if (!type1 || !type2) return generateDescription(types[0], stats, name);
-
-  const description = [
-    `Este peculiar ${name} combina características de sus dos tipos.`,
-    getRandomElement(type1.appearance),
-    getRandomElement(type2.behavior),
-    getRandomElement(getStatStrengths(stats)),
-  ];
-
-  return description.join(" ");
+  return adjustLength(mainDescription, TARGET_LENGTH, [...templates.filler]);
 }
